@@ -11,7 +11,9 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project,Long> {
 
-    List<Project> getByProjectCode (String projectCode);
+    //otomatik olarak bize sorguları dönderiyor.
+
+    Project getByProjectCode (String projectCode);
 
     List<Project> getByProjectCodeContains(String projectCode);
 

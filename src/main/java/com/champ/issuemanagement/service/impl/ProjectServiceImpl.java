@@ -1,59 +1,71 @@
 package com.champ.issuemanagement.service.impl;
 
+import com.champ.issuemanagement.dto.ProjectDto;
 import com.champ.issuemanagement.entity.Project;
 import com.champ.issuemanagement.repository.ProjectRepository;
 import com.champ.issuemanagement.service.ProjectService;
+import com.champ.issuemanagement.util.TPage;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository)
+    public ProjectServiceImpl(ProjectRepository projectRepository,ModelMapper modelMapper)
     {
         this.projectRepository=projectRepository;
+        this.modelMapper=modelMapper;
     }
 
     @Override
-    public Project save(Project project) {
-
-        if(project.getProjectCode()==null)
-        {
-            throw new IllegalArgumentException("Project code can not be null.");
+    public ProjectDto save(ProjectDto project) {
+        //aynı proje code olmasının önüne geçiyoruz.
+        Project projectCheck = projectRepository.getByProjectCode(project.getProjectCode());
+        if(projectCheck!=null){
+            throw new IllegalArgumentException("Project code is already!");
         }
-        project= this.projectRepository.save(project);
-        return project;
+        Project p = modelMapper.map(project,Project.class); //gelen parametreyi db entitye göre dönüştürdük.
+        p = projectRepository.save(p); //dönüştürdükten sonra db'ye kaydettik.
+        project.setId(p.getId()); //db'de oluşan id bilgisini aldık.
+        return project; //proje bilgilerini dto şeklinde dönderdik.
     }
 
     @Override
-    public Project getById(Long id) {
-        return projectRepository.getOne(id);
+    public ProjectDto getById(Long id) {
+        Project p = projectRepository.getOne(id);
+        return modelMapper.map(p,ProjectDto.class);
     }
 
     @Override
-    public Page<Project> getAllPageable(Pageable pageable) {
-        return projectRepository.findAll(pageable);
+    public TPage<ProjectDto> getAllPageable(Pageable pageable) {
+        Page<Project> data = projectRepository.findAll(pageable);
+        TPage<ProjectDto> response = new TPage<ProjectDto>();
+        response.setStat(data, Arrays.asList(modelMapper.map(data.getContent(),ProjectDto[].class)));
+        return response;
     }
 
     @Override
-    public List<Project> getByProjectCode(String projectCode) {
+    public ProjectDto getByProjectCode(String projectCode) {
         return null;
     }
 
     @Override
-    public List<Project> getByProjectCodeContains(String projectCode) {
+    public List<ProjectDto> getByProjectCodeContains(String projectCode) {
         return null;
     }
 
     @Override
-    public Boolean delete(Project project) {
+    public Boolean delete(ProjectDto project) {
         return null;
     }
 }
