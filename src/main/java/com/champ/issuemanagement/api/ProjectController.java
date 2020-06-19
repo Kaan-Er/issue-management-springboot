@@ -18,8 +18,8 @@ public class ProjectController {
         this.projectServiceImpl=projectServiceImpl;
     }
 
-    @GetMapping("/{id}") //localhost:8080/project/id
-    public ResponseEntity<ProjectDto> getById(@PathVariable("id") Long id){
+    @GetMapping("/{id}") //localhost:8080/project/id    required=true -> null bi değer gelmesini engelledik.
+    public ResponseEntity<ProjectDto> getById(@PathVariable(value = "id",required = true) Long id){
 
         ProjectDto projectDto = projectServiceImpl.getById(id);
         return ResponseEntity.ok(projectDto); //ok->status:200
@@ -32,8 +32,13 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectDto> updateProject(@PathVariable("id") Long id,@Valid @RequestBody ProjectDto project){
+    public ResponseEntity<ProjectDto> updateProject(@PathVariable(value = "id" ,required = true) Long id,@Valid @RequestBody ProjectDto project){
 
        return ResponseEntity.ok(projectServiceImpl.update(id,project));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteProject(@PathVariable(value = "id",required = true) Long id){
+        return ResponseEntity.ok(projectServiceImpl.delete(id));
     }
 }
