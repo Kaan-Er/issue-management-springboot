@@ -2,6 +2,7 @@ package com.champ.issuemanagement.api;
 
 import com.champ.issuemanagement.dto.ProjectDto;
 import com.champ.issuemanagement.service.impl.ProjectServiceImpl;
+import com.champ.issuemanagement.util.ApiPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping(ApiPaths.ProjectCtrl.Ctrl)
 public class ProjectController {
 
     private ProjectServiceImpl projectServiceImpl;

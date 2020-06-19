@@ -14,5 +14,7 @@ public interface IssueService {
 
     TPage<IssueDto> getAllPageable(Pageable pageable); // sayfalama yapıyoruz.
 
-    Boolean delete(IssueDto issue);
+    Boolean delete(Long id);
+
+    IssueDto update(Long id, IssueDto issueDto);
 }
