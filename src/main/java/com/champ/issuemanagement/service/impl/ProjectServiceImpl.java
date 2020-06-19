@@ -77,8 +77,8 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Project Does Not Exist ID :"+id);
         }
         //aynı proje code olmasının önüne geçiyoruz.
-        Project projectCheck = projectRepository.getByProjectCode(project.getProjectCode());
-        if(projectCheck!=null && projectCheck.getId()!=projectDb.getId()){
+        Project projectCheck = projectRepository.getByProjectCodeAndIdNot(project.getProjectCode(),id);
+        if(projectCheck!=null){
             throw new IllegalArgumentException("Project code is already!");
         }
 
