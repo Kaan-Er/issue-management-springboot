@@ -42,8 +42,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto getById(Long id) {
-        Project p = projectRepository.getOne(id);
-        return modelMapper.map(p,ProjectDto.class);
+        Project p = projectRepository.getOne(id); //verilen id'ye göre db de kayıtlı proje bilgilerini aldık.
+        return modelMapper.map(p,ProjectDto.class); //bu bilgileri dto'ya göre map edip return ettik.
     }
 
     @Override
@@ -67,5 +67,25 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Boolean delete(ProjectDto project) {
         return null;
+    }
+
+    @Override
+    public ProjectDto update(Long id, ProjectDto project) {
+        Project projectDb = projectRepository.getOne(id); //id ye göre projeyi db den aldık.
+        if(projectDb==null) // eger bu id li bir projemiz yoksa hata fırlatıyoruz.
+        {
+            throw new IllegalArgumentException("Project Does Not Exist ID :"+id);
+        }
+        //aynı proje code olmasının önüne geçiyoruz.
+        Project projectCheck = projectRepository.getByProjectCode(project.getProjectCode());
+        if(projectCheck!=null && projectCheck.getId()!=projectDb.getId()){
+            throw new IllegalArgumentException("Project code is already!");
+        }
+
+        projectDb.setProjectCode(project.getProjectCode());
+        projectDb.setProjectName(project.getProjectName());
+
+        projectRepository.save(projectDb);
+        return modelMapper.map(projectDb,ProjectDto.class);
     }
 }

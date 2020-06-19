@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
@@ -24,8 +26,14 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDto> createProject(@RequestBody ProjectDto project){
+    public ResponseEntity<ProjectDto> createProject(@Valid @RequestBody ProjectDto project){ //@Valid->kısıtlama yaptıklarımızı kontrol eder.(@NotNull demiştik)
 
         return ResponseEntity.ok(projectServiceImpl.save(project));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectDto> updateProject(@PathVariable("id") Long id,@Valid @RequestBody ProjectDto project){
+
+       return ResponseEntity.ok(projectServiceImpl.update(id,project));
     }
 }
