@@ -2,7 +2,9 @@ package com.champ.issuemanagement.api;
 import com.champ.issuemanagement.dto.ProjectDto;
 import com.champ.issuemanagement.service.impl.ProjectServiceImpl;
 import com.champ.issuemanagement.util.ApiPaths;
+import com.champ.issuemanagement.util.TPage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,11 @@ public class ProjectController {
     @Autowired
     public ProjectController(ProjectServiceImpl projectServiceImpl){
         this.projectServiceImpl=projectServiceImpl;
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<TPage<ProjectDto>> getAllByPagination(Pageable pageable){
+        return ResponseEntity.ok(projectServiceImpl.getAllPageable(pageable)); //ok->status:200
     }
 
     @GetMapping("/{id}") //localhost:8080/project/id    required=true -> null bi değer gelmesini engelledik.
